@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Case Mind Map</title>
+<!-- Link CSS Stylesheet -->
+<link rel="stylesheet" href="style.css">
+<!-- Link JavaScript File -->
+<script src="script.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>Test Case Mind Map</h1>
+  <p class="sub">Import a JSON / CSV / XLSX file of categories and test cases, mark pass/fail/blocked, add remarks, and export.</p>
+
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <label class="file-btn">
+        <input type="file" id="importFile" accept=".json,.csv,.xlsx,.xls" onchange="handleImport(event)">
+        Import file
+      </label>
+      <select id="templateFormat">
+        <option value="csv">CSV</option>
+        <option value="json">JSON</option>
+        <option value="xlsx">XLSX</option>
+      </select>
+      <button onclick="downloadTemplate()">Download template</button>
+    </div>
+    <div class="toolbar-group">
+      <button onclick="expandAll()">Expand all</button>
+      <button onclick="collapseAll()">Collapse all</button>
+      <button class="primary" onclick="exportResults('json')">Export JSON</button>
+      <button class="primary" onclick="exportResults('csv')">Export CSV</button>
+      <button class="primary" onclick="exportResults('xlsx')">Export XLSX</button>
+    </div>
+  </div>
+
+  <div class="toolbar" style="justify-content:flex-start;">
+    <div class="counts">
+      <span>Pass: <b id="cnt-pass">0</b></span>
+      <span>Fail: <b id="cnt-fail">0</b></span>
+      <span>Blocked: <b id="cnt-blocked">0</b></span>
+      <span>Pending: <b id="cnt-pending">0</b></span>
+      <span>Total: <b id="cnt-total">0</b></span>
+    </div>
+  </div>
+
+  <div class="toolbar" style="justify-content:flex-start;">
+    <div class="toolbar-group">
+      <span style="font-size:12.5px;color:var(--text-secondary);margin-right:2px;">Filter:</span>
+      <button class="filter-chip" data-status="pass" onclick="toggleFilter('pass')">Pass</button>
+      <button class="filter-chip" data-status="fail" onclick="toggleFilter('fail')">Fail</button>
+      <button class="filter-chip" data-status="blocked" onclick="toggleFilter('blocked')">Blocked</button>
+      <button class="filter-chip" data-status="pending" onclick="toggleFilter('pending')">Pending</button>
+      <button onclick="resetFilter()">Clear filter</button>
+    </div>
+  </div>
+
+    <div class="toolbar" style="justify-content:flex-end;">
+    <div class="toolbar-group">
+      <button class="primary" onclick="toggleAddForm()"><span style="font-weight:700;">+</span>&nbsp;Add test case</button>
+    </div>
+  </div>
+  <div id="addForm" class="add-form" style="display:none;">
+    <div class="add-form-grid">
+      <div class="field">
+        <label>Category</label>
+        <input list="categoryOptions" id="af-category" placeholder="Existing or new category name">
+        <datalist id="categoryOptions"></datalist>
+      </div>
+      <div class="field">
+        <label>ID</label>
+        <input id="af-id" placeholder="e.g. A6">
+      </div>
+      <div class="field field-wide">
+        <label>Description</label>
+        <input id="af-description" placeholder="What this test case verifies">
+      </div>
+      <div class="field field-wide">
+        <label>Expected</label>
+        <input id="af-expected" placeholder="What should happen if it passes">
+      </div>
+    </div>
+    <div class="add-form-actions">
+      <button onclick="toggleAddForm()">Cancel</button>
+      <button class="primary" onclick="submitAddForm()">Add test case</button>
+    </div>
+  </div>
+  <div id="tree"></div>
+
+  <p class="footer-note">
+    Template columns: <b>Category, ID, Description, Expected, Status, Remarks</b>.
+    Status accepts: pass / fail / blocked / pending (blank = pending).
+  </p>
+</div>
+</body>
+</html>
